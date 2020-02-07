@@ -55,7 +55,6 @@ YMARGIN = int((display_height - (4 * (SizeCardH + GapSize))) / 2)
 
 def resource_path(relative_path):
     try:
-    # PyInstaller creates a temp folder and stores path in _MEIPASS
         base_path = sys._MEIPASS
     except Exception:
         base_path = os.path.abspath(".")
@@ -107,10 +106,7 @@ def game_intro():
         gameDisplay.blit(title,((display_width/2)-(title_width/2),50))
 
         largeText = pygame.font.Font('freesansbold.ttf',115)
-        #TextSurf, TextRect = text_objects("Memory Game",largeText)
-        #TextRect.center = ((display_width/2),(display_width/2))
-        #gameDisplay.blit(TextSurf, TextRect)
-
+    
         button("4x3",540-75,350,150,40,yellow,white,game4x3)
         button("4x4",540-75,400,150,40,yellow,white,game4x4)
         button("5x4",540-75,450,150,40,yellow,white,game5x4)
@@ -119,69 +115,52 @@ def game_intro():
         button("Exit",540-75,625,150,40,yellow,white,"quit")
 
         mouse = pygame.mouse.get_pos()
-        #print(mouse)
-
-        #if 150+100 > mouse[0] > 150 and 450+50 > mouse[1] > 450:
-        #    pygame.draw.rect(gameDisplay, bright_green, (150,450,100,50))
-        #else:  
-        #    pygame.draw.rect(gameDisplay, green, (150,450,100,50))  
-
-        #smallText = pygame.font.Font("freesansbold.ttf",20)
-        #TextSurf, TextRect = text_objects("GO!", smallText)
-        #TextRect.center = ( (150+(100/2)),(450+ (50/2)))
-        #gameDisplay.blit(TextSurf,TextRect)
     
-
-
-
         pygame.display.update()
         clock.tick(30)
 
 def getRandomizedBoard(boardw,boardh):
-    # Get a list of every possible shape in every possible color.
     icons = []
     for color in AllColors:
         for shape in AllShapes:
             icons.append( (shape, color) )
 
-    random.shuffle(icons) # randomize the order of the icons list
-    numIconsUsed = int(boardw * boardh / 2) # calculate how many icons are needed
-    icons = icons[:numIconsUsed] * 2 # make two of each
+    random.shuffle(icons) 
+    numIconsUsed = int(boardw * boardh / 2) 
+    icons = icons[:numIconsUsed] * 2 
     random.shuffle(icons)
 
-    # Create the board data structure, with randomly placed icons.
     board = []
     for x in range(boardw):
         column = []
         for y in range(boardh):
             column.append(icons[0])
-            del icons[0] # remove the icons as we assign them
+            del icons[0]
         board.append(column)
     return board
 
 def leftTopCoordsOfBox(boxx, boxy):
-    # Convert board coordinates to pixel coordinates
+
     left = boxx * (SizeCardW + GapSize) + XMARGIN
     top = boxy * (SizeCardH + GapSize) + YMARGIN
     return (left, top)
 
 def drawBoard(board,boardw,boardh,revealed):
-    # Draws all of the boxes in their covered or revealed state.
+
     for boxx in range(boardw):
         for boxy in range(boardh):
             left, top = leftTopCoordsOfBox(boxx, boxy)
            
             if not revealed[boxx][boxy]:
-                # Draw a covered box.
+
                 pygame.draw.rect(DISPLAYSURF, BoxColor, (left, top, SizeCardW, SizeCardH))
             else:
-                # Draw the (revealed) icon.
+
                 shape, color = getShapeAndColor(board, boxx, boxy)
                 drawIcon(shape, color, boxx, boxy)
 
 def getShapeAndColor(board, boxx, boxy):
-    # shape value for x, y spot is stored in board[x][y][0]
-    # color value for x, y spot is stored in board[x][y][1]
+
     return board[boxx][boxy][0], board[boxx][boxy][1]
 
 
@@ -205,11 +184,11 @@ def drawHighlightBox(boxx, boxy):
     pygame.draw.rect(DISPLAYSURF, white, (left, top, SizeCardW, SizeCardH))
 
 def drawIcon(shape, color, boxx, boxy):
-    quarter = int(SizeCardW * 0.25) # syntactic sugar
-    half =    int(SizeCardH * 0.5)  # syntactic sugar
+    quarter = int(SizeCardW * 0.25)
+    half =    int(SizeCardH * 0.5) 
 
-    left, top = leftTopCoordsOfBox(boxx, boxy) # get pixel coords from board coords
-    # Draw the shapes
+    left, top = leftTopCoordsOfBox(boxx, boxy)
+
     if shape == DONUT:
         pygame.draw.ellipse(DISPLAYSURF, color, (left, top + quarter, SizeCardW, half))
         pygame.draw.ellipse(DISPLAYSURF, color, (left, top + half, SizeCardW, half))
@@ -225,10 +204,10 @@ def drawIcon(shape, color, boxx, boxy):
         pygame.draw.ellipse(DISPLAYSURF, color, (left, top + quarter, SizeCardW, half))
 
 def hasWon(revealedBoxes):
-    # Returns True if all the boxes have been revealed, otherwise False
+ 
     for i in revealedBoxes:
         if False in i:
-            return False # return False if any boxes are covered.
+            return False 
     return 1
 
 def game4x3():
@@ -269,7 +248,7 @@ def game4x3():
                 if event.type == pygame.MOUSEBUTTONUP:
                     wait = True
         
-        for event in pygame.event.get(): # event handling loop
+        for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
@@ -387,7 +366,7 @@ def game4x4():
                 if event.type == pygame.MOUSEBUTTONUP:
                     wait = True
         
-        for event in pygame.event.get(): # event handling loop
+        for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
@@ -505,7 +484,7 @@ def game5x4():
                 if event.type == pygame.MOUSEBUTTONUP:
                     wait = True
         
-        for event in pygame.event.get(): # event handling loop
+        for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
@@ -623,7 +602,7 @@ def game6x5():
                 if event.type == pygame.MOUSEBUTTONUP:
                     wait = True
         
-        for event in pygame.event.get(): # event handling loop
+        for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
@@ -741,7 +720,7 @@ def game6x6():
                 if event.type == pygame.MOUSEBUTTONUP:
                     wait = True
         
-        for event in pygame.event.get(): # event handling loop
+        for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
